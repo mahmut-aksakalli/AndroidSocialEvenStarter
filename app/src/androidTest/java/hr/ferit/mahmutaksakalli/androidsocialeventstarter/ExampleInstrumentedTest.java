@@ -1,4 +1,4 @@
-package hr.ferit.mahmutaksakalli.androidsocialeventstater;
+package hr.ferit.mahmutaksakalli.androidsocialeventstarter;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

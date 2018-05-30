@@ -22,6 +22,15 @@ allprojects {
     }
 }
 
+ext{
+    playVersion = "12.0.1"
+    butterKnifeVersion = "8.8.1"
+    picassoVersion = "2.71828"
+    retrofit2Version = "2.4.0"
+    recyclerViewVersion = "27.1.0"
+    archVersion = "1.1.1"
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

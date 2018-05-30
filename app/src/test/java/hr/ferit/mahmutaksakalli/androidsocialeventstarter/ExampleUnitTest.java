@@ -1,4 +1,4 @@
-package hr.ferit.mahmutaksakalli.androidsocialeventstater;
+package hr.ferit.mahmutaksakalli.androidsocialeventstarter;
 
 import org.junit.Test;
 
