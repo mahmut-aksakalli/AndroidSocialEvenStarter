@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "55812127327",
+    "firebase_url": "https://androidsocialeventstarter.firebaseio.com",
+    "project_id": "androidsocialeventstarter",
+    "storage_bucket": "androidsocialeventstarter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:55812127327:android:7d43154111f84ffe",
+        "android_client_info": {
+          "package_name": "hr.ferit.mahmutaksakalli.androidsocialeventstater"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "55812127327-s656a2eb1532dcqapvk7npdjvi6ojn5m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hr.ferit.mahmutaksakalli.androidsocialeventstater",
+            "certificate_hash": "45d5b6d0b2cf7377ba1042428cf146c8ae9b745c"
+          }
+        },
+        {
+          "client_id": "55812127327-h6pd6jsjef3lo3nu0pt6fd0494necbej.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "55812127327-33s24mtb399mnuk5m4fm630aihas58bg.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "55812127327-8ucsedpm11an81aks7988b867pgft3ua.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "55812127327-ptobi3dr3hnh853ppooucc7075us17bu.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "55812127327-h6pd6jsjef3lo3nu0pt6fd0494necbej.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB077C6iR4OjHLekyn3ddIps6mH-nHWq4k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "55812127327-h6pd6jsjef3lo3nu0pt6fd0494necbej.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

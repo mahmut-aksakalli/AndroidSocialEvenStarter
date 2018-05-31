@@ -1,9 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="hr.ferit.mahmutaksakalli.androidsocialeventstarter.activities.PlaceDetailsActivity">
+    tools:context=".activities.PlaceDetailsActivity">
 
-</android.support.constraint.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+
+        <ImageView
+            android:id="@+id/poster"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@color/grey_100"
+            android:layout_marginTop="10dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/headtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:text="@string/headtitle"
+                android:textSize="26sp" />
+
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/headtitle"
+                android:text="adress"/>
+
+            <TextView
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/ratingBg"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:padding="5dp"
+                android:text="@string/rating"
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/upcoming"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/upcoming"
+            android:textSize="20sp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvUpcomingEvents"
+            android:layout_width="match_parent"
+            android:layout_height="150dp">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/eventText"
+            android:textSize="18sp"/>
+
+        <Button
+            android:id="@+id/createEvent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorBg"
+            android:layout_marginTop="10dp"
+            android:text="@string/createEvent"
+            android:textColor="@color/white"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:weightSum="2">
+
+        <ImageButton
+            android:id="@+id/listView"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:maxHeight="50dp"
+            android:layout_weight="0.999"
+            android:padding="10dp"
+            app:srcCompat="@drawable/if_menu"
+            android:background="@color/colorBg"/>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.002"
+            android:background="?android:attr/listDivider" />
+
+        <ImageButton
+            android:id="@+id/mapView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:maxHeight="50dp"
+            android:scaleType="fitCenter"
+            android:layout_weight="0.999"
+            android:padding="10dp"
+            app:srcCompat="@drawable/if_location"
+            android:background="@color/colorBg"/>
+    </LinearLayout>
+</RelativeLayout>

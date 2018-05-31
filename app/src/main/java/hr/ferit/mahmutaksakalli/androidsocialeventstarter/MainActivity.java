@@ -1,36 +1,71 @@
 package hr.ferit.mahmutaksakalli.androidsocialeventstarter;
 
 import android.Manifest;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import hr.ferit.mahmutaksakalli.androidsocialeventstarter.activities.PlaceDetailsActivity;
+import hr.ferit.mahmutaksakalli.androidsocialeventstarter.model.PlaceInfo;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.model.SearchResult;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.network.RetrofitHelper;
+import hr.ferit.mahmutaksakalli.androidsocialeventstarter.recylerview.PlacesAdapter;
+import hr.ferit.mahmutaksakalli.androidsocialeventstarter.recylerview.PlacesClickCallback;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private PlaceViewModel mViewModel;
+    @BindView(R.id.rvNearbylocation) RecyclerView rvSearchPlaces;
 
     private static final int REQUEST_LOCATION_PERMISSION = 10;
     private static final String TAG = "response_ok";
-    private static final String KEY_API = "AIzaSyCLhS2ls4zHqefSBqgCnqwGbM4XyniJNq0";
-    int radius = 5000;
+    public static final String KEY_API = "AIzaSyCLhS2ls4zHqefSBqgCnqwGbM4XyniJNq0";
+    public static final String PLACE_ID = "place_id";
+    public static final String PLACE_NAME = "place_name";
+    public static final String PLACE_ADDRESS = "place_address";
+    public static final String PLACE_RATING = "place_rating";
+    public static final String PLACE_PHOTO = "place_photo";
+
+    private PlaceViewModel mViewModel;
+    private Location mLocation;
 
     LocationListener mLocationListener;
     LocationManager mLocationManager;
+
+    private PlacesClickCallback mClickCallback = new PlacesClickCallback() {
+        @Override
+        public void onClick(PlaceInfo place) {
+            Intent placeIntent = new Intent(getApplicationContext(), PlaceDetailsActivity.class);
+            placeIntent.putExtra(PLACE_ID,place.getPlaceId());
+            placeIntent.putExtra(PLACE_NAME,place.getName());
+            placeIntent.putExtra(PLACE_ADDRESS,place.getVicinity());
+            placeIntent.putExtra(PLACE_RATING,String.valueOf(place.getRating()));
+            placeIntent.putExtra(PLACE_PHOTO,place.getPhotoURL());
+            startActivity(placeIntent);
+        }
+    };
 
 
     @Override
@@ -38,11 +73,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ButterKnife.bind(this);
+
         mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         mLocationListener = new SimpleLocationListener();
 
         mViewModel = ViewModelProviders.of(this)
                 .get(PlaceViewModel.class);
+
+        setUpRecyclerView();
 
     }
 
@@ -57,9 +96,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         if (this.hasLocationPermission()) {
             this.startTracking();
         }
+
     }
 
     @Override
@@ -68,16 +109,26 @@ public class MainActivity extends AppCompatActivity {
         this.stopTracking();
     }
 
-     void fetchShows(String key,String location, int radius){
+     void fetchShows(String key, final Location location){
+         StringBuilder locationString = new StringBuilder();
+         locationString.append(location.getLatitude()).append(",");
+         locationString.append(location.getLongitude());
+
         RetrofitHelper
                 .getApi()
-                .getNearbyPlaces(key, location, radius)
+                .getNearbyPlaces(key, locationString.toString())
                 .enqueue(new Callback<SearchResult>() {
+                    Location resultLocation = new Location("");
                     @Override
                     public void onResponse(Call<SearchResult> call,
                                            Response<SearchResult> response) {
 
                         SearchResult resultBody = response.body();
+                        for(PlaceInfo result: resultBody.getResults()){
+                            this.resultLocation.setLatitude(result.getGeometry().getLocation().getLat());
+                            this.resultLocation.setLongitude(result.getGeometry().getLocation().getLng());
+                            result.setDistanceTo((int)location.distanceTo(resultLocation));
+                        }
                         mViewModel.setSearchPlaces(resultBody.getResults());
 
                     }
@@ -90,13 +141,33 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public void updateLocationDisplay(Location location) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(location.getLatitude()).append(",");
-        stringBuilder.append(location.getLongitude());
+    void setUpRecyclerView() {
 
-        this.fetchShows(KEY_API,stringBuilder.toString(),radius);
+        LinearLayoutManager linearLayout =
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
+        DividerItemDecoration divider =
+                new DividerItemDecoration(this, linearLayout.getOrientation());
+
+        PlacesAdapter adapter = new PlacesAdapter(new ArrayList<PlaceInfo>(), mClickCallback);
+
+        rvSearchPlaces.setLayoutManager(linearLayout);
+        rvSearchPlaces.addItemDecoration(divider);
+        rvSearchPlaces.setAdapter(adapter);
+
+        mViewModel.getSearchPlaces().observe(this, new Observer<List<PlaceInfo>>() {
+            @Override
+            public void onChanged(@Nullable List<PlaceInfo> places) {
+                ((PlacesAdapter)(rvSearchPlaces.getAdapter())).refreshData(places);
+
+            }
+        });
+    }
+
+    public void updateLocation(Location location) {
+        mLocation = location;
+
+        this.fetchShows(KEY_API,location);
     }
 
     public void startTracking() {
@@ -106,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         String locationProvider = mLocationManager.getBestProvider(criteria, true);
         long minTime = 1000*60;
-        float minDistance = 100;
+        float minDistance = 1000;
 
         try {
             mLocationManager.requestLocationUpdates(locationProvider, minTime, minDistance,
@@ -153,9 +224,9 @@ public class MainActivity extends AppCompatActivity {
 
     private class SimpleLocationListener implements LocationListener{
         @Override
-        public void onLocationChanged(Location location) { updateLocationDisplay(location); }
+        public void onLocationChanged(Location location) { updateLocation(location); }
         @Override public void onStatusChanged(String provider, int status, Bundle extras) {}
-        @Override public void onProviderEnabled(String provider) { }
+        @Override public void onProviderEnabled(String provider) {}
         @Override public void onProviderDisabled(String provider) {}
     }
 }

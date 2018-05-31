@@ -1,6 +1,8 @@
 
 package hr.ferit.mahmutaksakalli.androidsocialeventstarter.model;
 
+import android.util.Log;
+
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -43,6 +45,24 @@ public class PlaceInfo {
     @SerializedName("vicinity")
     @Expose
     private String vicinity;
+
+    private int distanceTo = 0;
+
+    public int getDistanceTo() {
+        return distanceTo;
+    }
+
+    public String getPhotoURL(){
+        if (photos != null) {
+            return photos.get(0).getPhotoReference();
+        }else{
+            return null;
+        }
+    }
+
+    public void setDistanceTo(int distanceTo) {
+        this.distanceTo = distanceTo;
+    }
 
     public Geometry getGeometry() {
         return geometry;

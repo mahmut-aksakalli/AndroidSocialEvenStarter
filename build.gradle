@@ -8,10 +8,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.2'
-        
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'com.google.gms:google-services:4.0.1'
     }
 }
 
@@ -23,12 +20,13 @@ allprojects {
 }
 
 ext{
-    playVersion = "12.0.1"
+    playVersion = "15.0.1"
     butterKnifeVersion = "8.8.1"
     picassoVersion = "2.71828"
     retrofit2Version = "2.4.0"
     recyclerViewVersion = "27.1.0"
     archVersion = "1.1.1"
+    firebaseVersion = "16.0.1"
 }
 
 task clean(type: Delete) {

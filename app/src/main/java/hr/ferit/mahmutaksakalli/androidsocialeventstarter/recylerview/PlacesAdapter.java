@@ -1,10 +1,13 @@
-package hr.ferit.mahmutaksakalli.androidsocialeventstarter;
+package hr.ferit.mahmutaksakalli.androidsocialeventstarter.recylerview;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -13,17 +16,18 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.ferit.mahmutaksakalli.androidsocialeventstarter.R;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.model.PlaceInfo;
 
 public class PlacesAdapter  extends RecyclerView.Adapter<PlacesAdapter.PlaceViewHolder>{
 
     private List<PlaceInfo> mPlaces;
-    private NewsClickCallback mCallback;
+    private PlacesClickCallback mCallback;
 
-    public NewsAdapter(List<PlaceInfo> places, NewsClickCallback onNewsClickListener){
+    public PlacesAdapter(List<PlaceInfo> places,PlacesClickCallback onPlacesClickListener){
         mPlaces = new ArrayList<>();
         this.refreshData(places);
-        mCallback = onNewsClickListener;
+        mCallback = onPlacesClickListener;
     }
 
     @NonNull
@@ -37,17 +41,27 @@ public class PlacesAdapter  extends RecyclerView.Adapter<PlacesAdapter.PlaceView
     @Override
     public void onBindViewHolder(@NonNull PlaceViewHolder holder, int position) {
         PlaceInfo current = mPlaces.get(position);
-        holder.title.setText(current.getTitle());
-        holder.category.setText(current.getCategory());
-        holder.description.setText(current.getDescription());
-        holder.pubDate.setText(current.getPubDate());
+        String dist = String.valueOf(current.getDistanceTo())+" meters";
+        StringBuilder photoURL = new StringBuilder();
+        photoURL.append("https://maps.googleapis.com/maps/api/place/photo?")
+                .append("maxwidth=960&photoreference=").append(current.getPhotoURL())
+                .append("&key=AIzaSyCLhS2ls4zHqefSBqgCnqwGbM4XyniJNq0");
+
+        holder.title.setText(current.getName());
+        holder.distance.setText(dist);
         Picasso.get()
-                .load(current.getEnclosure().getUrl())
+                .load(photoURL.toString())
                 .centerCrop()
                 .fit()
-                .error(R.mipmap.ic_launcher)
-                .placeholder(R.mipmap.ic_launcher)
+                .error(R.drawable.cafe_icon)
+                .placeholder(R.drawable.cafe_icon)
                 .into(holder.poster);
+
+        if(current.getRating() == null){
+            holder.score.setText("0.0");
+        }else{
+            holder.score.setText(String.valueOf(current.getRating()));
+        }
     }
 
     @Override
@@ -55,21 +69,20 @@ public class PlacesAdapter  extends RecyclerView.Adapter<PlacesAdapter.PlaceView
         return mPlaces.size();
     }
 
-    public void refreshData(List<PlaceInfo> news) {
+    public void refreshData(List<PlaceInfo> places) {
         mPlaces.clear();
-        mPlaces.addAll(news);
+        mPlaces.addAll(places);
         this.notifyDataSetChanged();
     }
 
     public class PlaceViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.poster) ImageView poster;
-        @BindView(R.id.title)  TextView title;
-        @BindView(R.id.description)  TextView description;
-        @BindView(R.id.category) TextView category;
-        @BindView(R.id.pubdate)  TextView pubDate;
+        @BindView(R.id.title) TextView title;
+        @BindView(R.id.distance)  TextView distance;
+        @BindView(R.id.score) TextView score;
 
-        public PlaceViewHolder(View itemView, final NewsClickCallback callback) {
+        public PlaceViewHolder(View itemView, final PlacesClickCallback callback) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 

@@ -1,4 +1,7 @@
 package hr.ferit.mahmutaksakalli.androidsocialeventstarter.recylerview;
 
-public class PlacesClickCallback {
+import hr.ferit.mahmutaksakalli.androidsocialeventstarter.model.PlaceInfo;
+
+public interface PlacesClickCallback {
+    void onClick(PlaceInfo place);
 }

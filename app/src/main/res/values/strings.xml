@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">AndroidSocialEventStarter</string>
+    <string name="headtitle">Nearby Places</string>
+    <string name="upcoming">UPCOMING EVENTS</string>
+    <string name="rating">0.0</string>
+    <string name="eventText">
+        If you\'re looking something different,\ncreate your social event</string>
+    <string name="createEvent">CREATE EVENT</string>
+    <string name="publishEvent">PUBLISH EVENT</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcomeh2">see events close to you</string>
+    <string name="welcomeh1">AroundYou</string>
+    <string name="login">LOGIN</string>
+    <string name="signin">CREATE ACCOUNT</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="signinClick">Create new Account</string>
+    <string name="errorMessage">Login Failed!</string>
+
+
+    <string name="web_client">
+        55812127327-h6pd6jsjef3lo3nu0pt6fd0494necbej.apps.googleusercontent.com</string>
+
 </resources>

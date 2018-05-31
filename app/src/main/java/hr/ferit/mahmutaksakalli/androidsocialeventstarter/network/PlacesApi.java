@@ -7,6 +7,6 @@ import retrofit2.http.Query;
 
 public interface PlacesApi {
 
-    @GET("api/place/nearbysearch/json?type=cafe")
-    Call<SearchResult> getNearbyPlaces(@Query("key") String key, @Query("location") String location, @Query("radius") int radius);
+    @GET("api/place/nearbysearch/json?type=cafe&rankby=distance")
+    Call<SearchResult> getNearbyPlaces(@Query("key") String key, @Query("location") String location);
 }

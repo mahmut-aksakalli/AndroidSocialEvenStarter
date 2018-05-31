@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="hr.ferit.mahmutaksakalli.androidsocialeventstarter">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,8 +20,15 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activities.PlaceDetailsActivity" />
+        <activity android:name=".activities.CreateEventActivity" />
+        <activity android:name=".MainActivity"></activity>
+
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCLhS2ls4zHqefSBqgCnqwGbM4XyniJNq0" />
+
     </application>
+
 </manifest>
