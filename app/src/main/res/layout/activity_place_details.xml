@@ -65,6 +65,16 @@
             android:text="@string/upcoming"
             android:textSize="20sp" />
 
+        <TextView
+            android:id="@+id/nothing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:text="@string/nothing"
+            android:textSize="18sp"
+            android:textStyle="italic" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvUpcomingEvents"
             android:layout_width="match_parent"

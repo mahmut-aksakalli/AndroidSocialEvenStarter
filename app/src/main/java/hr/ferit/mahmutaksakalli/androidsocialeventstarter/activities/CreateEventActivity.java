@@ -4,13 +4,12 @@ import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -21,7 +20,6 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import hr.ferit.mahmutaksakalli.androidsocialeventstarter.MainActivity;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.R;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.model.database.EventInfo;
 
@@ -31,13 +29,17 @@ public class CreateEventActivity extends AppCompatActivity
 
     private String placeID;
     private String placeName;
+    private String eventNote;
     private int year, month, day;
     private int hourOfDay, minute;
     private boolean dateFlag = false, timeFlag = false;
 
+    private FirebaseAuth mAuth;
+
     @BindView(R.id.date)        TextView dateTextView;
     @BindView(R.id.time)        TextView timeTextView;
     @BindView(R.id.placeName)   TextView placeTextView;
+    @BindView(R.id.eventnote)   TextView eventNoteTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,15 +49,28 @@ public class CreateEventActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         Intent receivedIntent = getIntent();
-        placeID   = receivedIntent.getStringExtra(MainActivity.PLACE_ID);
-        placeName = receivedIntent.getStringExtra(MainActivity.PLACE_NAME);
+        placeID   = receivedIntent.getStringExtra(PlaceListActivity.PLACE_ID);
+        placeName = receivedIntent.getStringExtra(PlaceListActivity.PLACE_NAME);
 
         placeTextView.setText(placeName);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("message");
 
+        mAuth = FirebaseAuth.getInstance();
+
         myRef.setValue("Hello, World!vbvb");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in , if not send it to welcomepage
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            startActivity(
+                    new Intent(getApplicationContext(), WelcomeActivity.class));
+        }
     }
 
     @OnClick(R.id.date)
@@ -103,12 +118,12 @@ public class CreateEventActivity extends AppCompatActivity
     @OnClick(R.id.publishEvent)
     public void onClickPublishEvent() {
         Date eventDate = null;
-        /** Check inputs are empty or not */
-        if(timeFlag != true || dateFlag != true || placeID.isEmpty()) {
+        // Check inputs are empty or not
+        if(!timeFlag || !dateFlag || placeID.isEmpty()) {
             displayToastMessage("Fill all inputs!");
 
         } else {
-            /** create Date object of event date */
+            // create Date object of event date
             String dateString = new StringBuilder()
                     .append(String.valueOf(day)).append("/")
                     .append(String.valueOf(month)).append("/")
@@ -122,13 +137,15 @@ public class CreateEventActivity extends AppCompatActivity
                 e.printStackTrace();
             }
 
-            /** if date is past, show a warning*/
+            // if date is past, show a warning
             if(eventDate.before(new Date())){
                 displayToastMessage("enter a valid date");
             }else{
                 DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+                FirebaseUser user = mAuth.getCurrentUser();
 
-                EventInfo event = new EventInfo(placeID, eventDate);
+                eventNote = eventNoteTextView.getText().toString();
+                EventInfo event = new EventInfo(placeID, eventDate,eventNote, user.getDisplayName());
                 mDatabase.child("events").child(placeID).push().setValue(event);
 
                 setResult(RESULT_OK, new Intent());
@@ -136,6 +153,16 @@ public class CreateEventActivity extends AppCompatActivity
             }
         }
 
+    }
+
+    @OnClick(R.id.mapView)
+    void onClickMapView(){
+        startActivity(new Intent(getApplicationContext(), PlaceMapActivity.class ));
+    }
+
+    @OnClick(R.id.listView)
+    void onClickListView(){
+        startActivity(new Intent(getApplicationContext(), PlaceListActivity.class ));
     }
 
     private void displayToastMessage(String Text) {

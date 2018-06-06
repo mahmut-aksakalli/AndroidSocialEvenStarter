@@ -24,8 +24,10 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.android.support:mediarouter-v7:27.1.0'
     implementation 'com.android.support:support-v4:27.1.0'
+    implementation 'com.android.support:design:27.1.0'
     implementation "com.google.firebase:firebase-database:${rootProject.ext.firebaseVersion}"
     implementation "com.google.firebase:firebase-auth:${rootProject.ext.firebaseVersion}"
+    implementation 'com.google.firebase:firebase-core:16.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
@@ -36,6 +38,7 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:${rootProject.ext.archVersion}"
     annotationProcessor "android.arch.lifecycle:compiler:${rootProject.ext.archVersion}"
 
+    implementation "com.google.android.gms:play-services-maps:${rootProject.ext.playVersion}"
     implementation "com.google.android.gms:play-services-location:${rootProject.ext.playVersion}"
     implementation "com.google.android.gms:play-services-auth:${rootProject.ext.playVersion}"
     implementation "com.google.android.gms:play-services-identity:${rootProject.ext.playVersion}"

@@ -1,4 +1,4 @@
-package hr.ferit.mahmutaksakalli.androidsocialeventstarter;
+package hr.ferit.mahmutaksakalli.androidsocialeventstarter.activities;
 
 import android.Manifest;
 import android.arch.lifecycle.Observer;
@@ -9,23 +9,31 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hr.ferit.mahmutaksakalli.androidsocialeventstarter.activities.PlaceDetailsActivity;
+import butterknife.OnClick;
+import hr.ferit.mahmutaksakalli.androidsocialeventstarter.DataRepository;
+import hr.ferit.mahmutaksakalli.androidsocialeventstarter.PlaceViewModel;
+import hr.ferit.mahmutaksakalli.androidsocialeventstarter.R;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.model.PlaceInfo;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.model.SearchResult;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.network.RetrofitHelper;
@@ -35,9 +43,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class PlaceListActivity extends AppCompatActivity {
 
     @BindView(R.id.rvNearbylocation) RecyclerView rvSearchPlaces;
+    @BindView(R.id.loading) TextView loadingTextview;
 
     private static final int REQUEST_LOCATION_PERMISSION = 10;
     private static final String TAG = "response_ok";
@@ -49,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String PLACE_PHOTO = "place_photo";
 
     private PlaceViewModel mViewModel;
-    private Location mLocation;
+    private DataRepository mDataRepository;
 
     LocationListener mLocationListener;
     LocationManager mLocationManager;
@@ -71,17 +80,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_place_list);
 
         ButterKnife.bind(this);
+        loadingTextview.setVisibility(View.VISIBLE);
 
         mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-        mLocationListener = new SimpleLocationListener();
+        mLocationListener = new hr.ferit.mahmutaksakalli.androidsocialeventstarter.activities.PlaceListActivity.SimpleLocationListener();
 
         mViewModel = ViewModelProviders.of(this)
                 .get(PlaceViewModel.class);
 
         setUpRecyclerView();
+
+        mDataRepository = DataRepository.getInstance();
 
     }
 
@@ -109,10 +121,10 @@ public class MainActivity extends AppCompatActivity {
         this.stopTracking();
     }
 
-     void fetchShows(String key, final Location location){
-         StringBuilder locationString = new StringBuilder();
-         locationString.append(location.getLatitude()).append(",");
-         locationString.append(location.getLongitude());
+    void fetchShows(String key, final Location location){
+        StringBuilder locationString = new StringBuilder();
+        locationString.append(location.getLatitude()).append(",");
+        locationString.append(location.getLongitude());
 
         RetrofitHelper
                 .getApi()
@@ -129,7 +141,9 @@ public class MainActivity extends AppCompatActivity {
                             this.resultLocation.setLongitude(result.getGeometry().getLocation().getLng());
                             result.setDistanceTo((int)location.distanceTo(resultLocation));
                         }
+                        loadingTextview.setVisibility(View.GONE);
                         mViewModel.setSearchPlaces(resultBody.getResults());
+                        mDataRepository.setPlaces(resultBody.getResults());
 
                     }
 
@@ -165,8 +179,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateLocation(Location location) {
-        mLocation = location;
-
+        mDataRepository.setLocation(location);
         this.fetchShows(KEY_API,location);
     }
 
@@ -203,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void requestPermission() {
         String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
-        ActivityCompat.requestPermissions(MainActivity.this,
+        ActivityCompat.requestPermissions(hr.ferit.mahmutaksakalli.androidsocialeventstarter.activities.PlaceListActivity.this,
                 permissions, REQUEST_LOCATION_PERMISSION);
     }
 
@@ -220,6 +233,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         }
+    }
+
+    @OnClick(R.id.mapView)
+    void onClickMapView(){
+        startActivity(new Intent(getApplicationContext(), PlaceMapActivity.class ));
+    }
+
+    @OnClick(R.id.listView)
+    void onClickListView(){
+        startActivity(new Intent(getApplicationContext(), PlaceListActivity.class ));
     }
 
     private class SimpleLocationListener implements LocationListener{

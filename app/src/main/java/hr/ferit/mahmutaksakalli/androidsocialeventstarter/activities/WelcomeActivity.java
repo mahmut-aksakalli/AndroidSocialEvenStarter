@@ -21,22 +21,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import butterknife.OnClick;
-import hr.ferit.mahmutaksakalli.androidsocialeventstarter.MainActivity;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.R;
 
 public class WelcomeActivity extends AppCompatActivity implements
         View.OnClickListener{
 
     private static final String TAG = "GoogleActivity";
-    private static final String USER_NAME = "username";
-    private static final String USER_ID = "uid";
     private static final int RC_SIGN_IN = 9001;
 
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
 
-    private TextView    errorTextview;
+    private TextView errorTextview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,10 +83,8 @@ public class WelcomeActivity extends AppCompatActivity implements
     }
 
     private void sendKnownUserToActivity(FirebaseUser user){
-        Intent sendIntent = new Intent(getApplicationContext(), MainActivity.class);
-        sendIntent.putExtra(USER_NAME, user.getDisplayName());
-        sendIntent.putExtra(USER_ID, user.getUid());
-        startActivity(sendIntent);
+        startActivity(
+                new Intent(getApplicationContext(), PlaceListActivity.class));
     }
 
     @Override

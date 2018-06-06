@@ -35,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Place"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/grey_600"/>
 
@@ -43,8 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:text="HaciDayi"
-                android:background="@color/grey_100"/>
+                android:text="PlaceNAME" />
 
         </LinearLayout>
 
@@ -59,7 +59,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Date"
+                android:text="Date "
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/grey_600"/>
 
@@ -68,7 +69,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="5dp"
                 android:text="select date.."
+                android:textSize="18sp"
                 android:background="@color/grey_100"/>
 
             <Space
@@ -89,6 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Time"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/grey_600"/>
 
@@ -97,7 +101,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="5dp"
                 android:text="select time.."
+                android:textSize="18sp"
                 android:background="@color/grey_100"/>
 
             <Space
@@ -106,12 +112,31 @@
                 android:layout_weight="3" />
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Event Note:"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/grey_600"/>
+
+        <EditText
+            android:id="@+id/eventnote"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@color/grey_100"
+            android:inputType="text"
+            android:gravity="left"
+            android:textColor="@color/grey_600"/>
+
         <Button
             android:id="@+id/publishEvent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorBg"
-            android:layout_marginTop="250dp"
+            android:layout_marginTop="10dp"
             android:text="@string/publishEvent"
             android:textColor="@color/white" />
 

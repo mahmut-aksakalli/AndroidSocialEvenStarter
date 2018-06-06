@@ -1,14 +1,12 @@
 package hr.ferit.mahmutaksakalli.androidsocialeventstarter.activities;
 
-import android.arch.lifecycle.Observer;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,20 +16,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import hr.ferit.mahmutaksakalli.androidsocialeventstarter.MainActivity;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.R;
-import hr.ferit.mahmutaksakalli.androidsocialeventstarter.model.PlaceInfo;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.model.database.EventInfo;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.recylerview.EventClickCallback;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.recylerview.EventsAdapter;
-import hr.ferit.mahmutaksakalli.androidsocialeventstarter.recylerview.PlacesAdapter;
-import hr.ferit.mahmutaksakalli.androidsocialeventstarter.recylerview.PlacesClickCallback;
 
 public class PlaceDetailsActivity extends AppCompatActivity {
 
@@ -45,6 +36,7 @@ public class PlaceDetailsActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
     @BindView(R.id.headtitle) TextView headTitle;
+    @BindView(R.id.nothing)   TextView nothingTextview;
     @BindView(R.id.address)   TextView address;
     @BindView(R.id.rating)    TextView rating;
     @BindView(R.id.listView)  ImageButton listButton;
@@ -75,11 +67,11 @@ public class PlaceDetailsActivity extends AppCompatActivity {
     void setuptUI(){
 
         Intent receivedIntent = getIntent();
-        placeID   = receivedIntent.getStringExtra(MainActivity.PLACE_ID);
-        placeName = receivedIntent.getStringExtra(MainActivity.PLACE_NAME);
-        placeAddress = receivedIntent.getStringExtra(MainActivity.PLACE_ADDRESS);
-        placeRating  = receivedIntent.getStringExtra(MainActivity.PLACE_RATING);
-        placeReference  = receivedIntent.getStringExtra(MainActivity.PLACE_PHOTO);
+        placeID   = receivedIntent.getStringExtra(PlaceListActivity.PLACE_ID);
+        placeName = receivedIntent.getStringExtra(PlaceListActivity.PLACE_NAME);
+        placeAddress = receivedIntent.getStringExtra(PlaceListActivity.PLACE_ADDRESS);
+        placeRating  = receivedIntent.getStringExtra(PlaceListActivity.PLACE_RATING);
+        placeReference  = receivedIntent.getStringExtra(PlaceListActivity.PLACE_PHOTO);
 
         headTitle.setText(placeName);
         address.setText(placeAddress);
@@ -88,7 +80,7 @@ public class PlaceDetailsActivity extends AppCompatActivity {
         String photoURL = new StringBuilder()
                     .append("https://maps.googleapis.com/maps/api/place/photo?")
                     .append("maxwidth=960&photoreference=").append(placeReference)
-                    .append("&key=").append(MainActivity.KEY_API)
+                    .append("&key=").append(PlaceListActivity.KEY_API)
                     .toString();
 
         Picasso.get()
@@ -108,7 +100,8 @@ public class PlaceDetailsActivity extends AppCompatActivity {
         DividerItemDecoration divider =
                 new DividerItemDecoration(this, linearLayout.getOrientation());
 
-        EventsAdapter adapter = new EventsAdapter(mDatabase, mClickCallback, placeID);
+        EventsAdapter adapter = new EventsAdapter(this,
+                                        mDatabase, mClickCallback, placeID);
 
         rvUpcomingEvents.setLayoutManager(linearLayout);
         rvUpcomingEvents.addItemDecoration(divider);
@@ -116,11 +109,18 @@ public class PlaceDetailsActivity extends AppCompatActivity {
 
     }
 
+    public void setInfo(int count){
+        if(count == 0){
+            nothingTextview.setVisibility(View.VISIBLE);
+        } else {
+            nothingTextview.setVisibility(View.GONE);
+        }
+    }
     @OnClick(R.id.createEvent)
     public void onClickEvent(){
         Intent createIntent = new Intent(getApplicationContext(),CreateEventActivity.class);
-        createIntent.putExtra(MainActivity.PLACE_ID, placeID);
-        createIntent.putExtra(MainActivity.PLACE_NAME, placeName);
+        createIntent.putExtra(PlaceListActivity.PLACE_ID, placeID);
+        createIntent.putExtra(PlaceListActivity.PLACE_NAME, placeName);
         startActivityForResult(createIntent, INTENT_KEY);
     }
 
@@ -131,6 +131,16 @@ public class PlaceDetailsActivity extends AppCompatActivity {
             this.displayToastMessage("New event created");
 
         }
+    }
+
+    @OnClick(R.id.mapView)
+    void onClickMapView(){
+        startActivity(new Intent(getApplicationContext(), PlaceMapActivity.class ));
+    }
+
+    @OnClick(R.id.listView)
+    void onClickListView(){
+        startActivity(new Intent(getApplicationContext(), PlaceListActivity.class ));
     }
 
     private void displayToastMessage(String Text) {

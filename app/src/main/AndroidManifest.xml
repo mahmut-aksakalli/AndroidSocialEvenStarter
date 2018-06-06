@@ -19,15 +19,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".activities.PlaceDetailsActivity" />
         <activity android:name=".activities.CreateEventActivity" />
-        <activity android:name=".MainActivity"></activity>
-
+        <activity android:name=".activities.PlaceListActivity" />
+        <activity android:name=".activities.PlaceMapActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCLhS2ls4zHqefSBqgCnqwGbM4XyniJNq0" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
     </application>
 

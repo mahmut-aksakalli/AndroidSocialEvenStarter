@@ -1,5 +1,6 @@
 package hr.ferit.mahmutaksakalli.androidsocialeventstarter.recylerview;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +23,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.R;
+import hr.ferit.mahmutaksakalli.androidsocialeventstarter.activities.PlaceDetailsActivity;
 import hr.ferit.mahmutaksakalli.androidsocialeventstarter.model.database.EventInfo;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder>{
@@ -29,11 +31,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
     private EventClickCallback mCallback;
     private String placeID;
     private List<EventInfo> mEvents = new ArrayList<>();
+    private Context mContext;
 
-    public EventsAdapter(DatabaseReference ref, EventClickCallback Callback, String placeID){
+    public EventsAdapter(Context context,DatabaseReference ref, EventClickCallback Callback, String placeID){
         this.mDatabaseReference = ref;
         this.mCallback = Callback;
         this.placeID = placeID;
+        this.mContext = context;
 
         ValueEventListener dataListener = new ValueEventListener() {
             List<EventInfo> eventList = new ArrayList<>();
@@ -48,6 +52,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
                 }
 
                 refreshData(eventList);
+                ((PlaceDetailsActivity)mContext).setInfo(getItemCount());
             }
 
             @Override
@@ -74,8 +79,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm");
         String eventDate = formatter.format(current.date);
-        holder.title.setText(eventDate);
-
+        holder.note.setText(current.eventNote);
+        holder.user.setText(current.userName);
+        holder.date.setText(eventDate);
     }
 
     @Override
@@ -99,7 +105,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
     public class EventViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.title) TextView title;
+        @BindView(R.id.note) TextView note;
+        @BindView(R.id.user) TextView user;
+        @BindView(R.id.date) TextView date;
 
         public EventViewHolder(View itemView, final EventClickCallback callback) {
             super(itemView);
