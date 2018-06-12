@@ -1,7 +1,9 @@
 package hr.ferit.mahmutaksakalli.androidsocialeventstarter.activities;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,7 +28,7 @@ import hr.ferit.mahmutaksakalli.androidsocialeventstarter.R;
 public class WelcomeActivity extends AppCompatActivity implements
         View.OnClickListener{
 
-    private static final String TAG = "GoogleActivity";
+    private static final String TAG = "welcomepage";
     private static final int RC_SIGN_IN = 9001;
 
     private FirebaseAuth mAuth;
@@ -38,6 +40,9 @@ public class WelcomeActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(ContextCompat.getColor(this, R.color.colorBg)));
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         errorTextview = findViewById(R.id.errorMessage);
@@ -55,7 +60,6 @@ public class WelcomeActivity extends AppCompatActivity implements
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -63,11 +67,11 @@ public class WelcomeActivity extends AppCompatActivity implements
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+                            // Sign in success
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             if(user != null){
-                                sendKnownUserToActivity(user);
+                                sendKnownUserToActivity();
                             } else {
                                 errorTextview.setVisibility(View.VISIBLE);
                                 errorTextview.setText("An error occurred!");
@@ -82,7 +86,7 @@ public class WelcomeActivity extends AppCompatActivity implements
                 });
     }
 
-    private void sendKnownUserToActivity(FirebaseUser user){
+    private void sendKnownUserToActivity(){
         startActivity(
                 new Intent(getApplicationContext(), PlaceListActivity.class));
     }
@@ -90,18 +94,18 @@ public class WelcomeActivity extends AppCompatActivity implements
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
+        // Check if user is signed in (non-null)
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            sendKnownUserToActivity(currentUser);
+            sendKnownUserToActivity();
         }
     }
 
     @Override
     public void onClick(View v) {
+        // get buton click event and start intent for SignIn
         switch (v.getId()) {
             case R.id.sign_in_button:
-                Log.d(TAG,"STARTING INTENT");
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);
                 break;
@@ -123,7 +127,6 @@ public class WelcomeActivity extends AppCompatActivity implements
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
-                Log.d(TAG,"INTENT FAILED");
                 errorTextview.setVisibility(View.VISIBLE);
             }
         }

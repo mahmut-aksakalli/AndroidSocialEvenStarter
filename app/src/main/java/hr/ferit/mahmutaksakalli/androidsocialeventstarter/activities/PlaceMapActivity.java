@@ -3,7 +3,9 @@ package hr.ferit.mahmutaksakalli.androidsocialeventstarter.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -35,6 +37,9 @@ public class PlaceMapActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_map);
+
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(ContextCompat.getColor(this, R.color.colorBg)));
 
         findViewById(R.id.mapView).setOnClickListener(this);
         findViewById(R.id.listView).setOnClickListener(this);

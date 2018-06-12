@@ -1,7 +1,9 @@
 package hr.ferit.mahmutaksakalli.androidsocialeventstarter.activities;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -28,8 +30,6 @@ public class CreateEventActivity extends AppCompatActivity
                             TimePickerFragment.onTimePickerSetListener{
 
     private String placeID;
-    private String placeName;
-    private String eventNote;
     private int year, month, day;
     private int hourOfDay, minute;
     private boolean dateFlag = false, timeFlag = false;
@@ -46,20 +46,18 @@ public class CreateEventActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(ContextCompat.getColor(this, R.color.colorBg)));
+
         ButterKnife.bind(this);
 
         Intent receivedIntent = getIntent();
         placeID   = receivedIntent.getStringExtra(PlaceListActivity.PLACE_ID);
-        placeName = receivedIntent.getStringExtra(PlaceListActivity.PLACE_NAME);
-
+        String placeName = receivedIntent.getStringExtra(PlaceListActivity.PLACE_NAME);
         placeTextView.setText(placeName);
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
 
         mAuth = FirebaseAuth.getInstance();
 
-        myRef.setValue("Hello, World!vbvb");
     }
 
     @Override
@@ -144,7 +142,7 @@ public class CreateEventActivity extends AppCompatActivity
                 DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
                 FirebaseUser user = mAuth.getCurrentUser();
 
-                eventNote = eventNoteTextView.getText().toString();
+                String eventNote = eventNoteTextView.getText().toString();
                 EventInfo event = new EventInfo(placeID, eventDate,eventNote, user.getDisplayName());
                 mDatabase.child("events").child(placeID).push().setValue(event);
 

@@ -43,4 +43,7 @@ public class DataRepository {
         this.mLocation = mLocation;
     }
 
+    public int getCount(){
+        return mPlaces.size();
+    }
 }

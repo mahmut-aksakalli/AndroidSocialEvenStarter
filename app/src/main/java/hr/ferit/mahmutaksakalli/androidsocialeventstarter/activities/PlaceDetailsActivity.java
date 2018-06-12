@@ -1,6 +1,8 @@
 package hr.ferit.mahmutaksakalli.androidsocialeventstarter.activities;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -55,6 +57,9 @@ public class PlaceDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_details);
+
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(ContextCompat.getColor(this, R.color.colorBg)));
 
         ButterKnife.bind(this);
         mDatabase = FirebaseDatabase.getInstance().getReference();

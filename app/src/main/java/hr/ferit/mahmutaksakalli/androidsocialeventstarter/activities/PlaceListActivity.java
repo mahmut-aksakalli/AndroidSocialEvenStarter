@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -21,9 +22,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +47,7 @@ public class PlaceListActivity extends AppCompatActivity {
     @BindView(R.id.loading) TextView loadingTextview;
 
     private static final int REQUEST_LOCATION_PERMISSION = 10;
-    private static final String TAG = "response_ok";
+    private static final String TAG = "response";
     public static final String KEY_API = "AIzaSyCLhS2ls4zHqefSBqgCnqwGbM4XyniJNq0";
     public static final String PLACE_ID = "place_id";
     public static final String PLACE_NAME = "place_name";
@@ -82,11 +80,14 @@ public class PlaceListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_list);
 
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(ContextCompat.getColor(this, R.color.colorBg)));
+
         ButterKnife.bind(this);
         loadingTextview.setVisibility(View.VISIBLE);
 
         mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-        mLocationListener = new hr.ferit.mahmutaksakalli.androidsocialeventstarter.activities.PlaceListActivity.SimpleLocationListener();
+        mLocationListener = new SimpleLocationListener();
 
         mViewModel = ViewModelProviders.of(this)
                 .get(PlaceViewModel.class);
@@ -94,6 +95,8 @@ public class PlaceListActivity extends AppCompatActivity {
         setUpRecyclerView();
 
         mDataRepository = DataRepository.getInstance();
+
+
 
     }
 
@@ -184,24 +187,24 @@ public class PlaceListActivity extends AppCompatActivity {
     }
 
     public void startTracking() {
-        Log.d("Tracking", "Tracking started.");
+        Log.d(TAG, "Tracking started.");
 
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         String locationProvider = mLocationManager.getBestProvider(criteria, true);
-        long minTime = 1000*60;
-        float minDistance = 1000;
+        long minTime = 1000;
+        float minDistance = 100;
 
         try {
             mLocationManager.requestLocationUpdates(locationProvider, minTime, minDistance,
                     mLocationListener);
         }catch (SecurityException error){
-            Log.d("Tracking", error.getMessage());
+            Log.d(TAG, error.getMessage());
         }
     }
 
     public void stopTracking() {
-        Log.d("Tracking", "Tracking stopped.");
+        Log.d(TAG, "Tracking stopped.");
         mLocationManager.removeUpdates(mLocationListener);
     }
 
@@ -227,9 +230,10 @@ public class PlaceListActivity extends AppCompatActivity {
             case REQUEST_LOCATION_PERMISSION:
                 if (grantResults.length > 0) {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        Log.d("Permission", "Permission granted. User pressed allow.");
+                        Log.d(TAG, "Permission granted. User pressed allow.");
                     } else {
-                        Log.d("Permission", "Permission not granted. User pressed deny.");
+                        Log.d(TAG, "Permission not granted. User pressed deny.");
+                        loadingTextview.setText("Permission denied.\nPlease give access to location");
                     }
                 }
         }
@@ -237,7 +241,9 @@ public class PlaceListActivity extends AppCompatActivity {
 
     @OnClick(R.id.mapView)
     void onClickMapView(){
-        startActivity(new Intent(getApplicationContext(), PlaceMapActivity.class ));
+        if(mDataRepository.getCount() != 0){
+            startActivity(new Intent(getApplicationContext(), PlaceMapActivity.class ));
+        }
     }
 
     @OnClick(R.id.listView)

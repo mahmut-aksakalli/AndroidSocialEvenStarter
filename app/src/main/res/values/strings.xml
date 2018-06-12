@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidSocialEventStarter</string>
+    <string name="app_name">AroundYou</string>
     <string name="headtitle">PLACES AROUND YOU</string>
     <string name="loading">Places are loading..</string>
     <string name="nothing">There is no upcoming event..</string>
